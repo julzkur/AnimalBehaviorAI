@@ -1,9 +1,17 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PredatorBehavior : Animal
 {
-    public enum PredatorState { Idle, Wandering, Stalking, Chasing, Eating }
+    public enum PredatorState { Idle, Wandering, Stalking, Chasing, Eating, Resting }
     public PredatorState predatorState;
+
+
+    public Transform prey;
+    public Transform hidingSpot;
+    public Transform killSpot;
+    public float killDistance;
+    public float chaseDistance;
 
     protected override void Start()
     {
@@ -25,6 +33,9 @@ public class PredatorBehavior : Animal
                 break;
             case PredatorState.Eating:
                 EatingBehavior();
+                break;
+            case PredatorState.Resting:
+                Resting();
                 break;
         }
     }
@@ -61,7 +72,7 @@ public class PredatorBehavior : Animal
         // if has mate, drag to mate
         // after eating, go home/rest
     }
-    void IdleBehavior()
+    void Resting()
     {
         // resting? sitting
         // hunger bar

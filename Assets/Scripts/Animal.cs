@@ -22,6 +22,28 @@ public abstract class Animal : MonoBehaviour
 
     protected void MoveTo(Vector3 destination)
     {
-        agent.SetDestination(destination);
+        if (agent != null)
+        {
+            agent.SetDestination(destination);  // Set destination for movement
+            currentState = AnimalState.Moving;   // Update state to Moving
+        }
+    }
+
+    protected void StopMoving()
+    {
+        if (agent != null)
+        {
+            agent.isStopped = true;
+            currentState = AnimalState.Idle;  // Set state to Idle when stopped
+        }
+    }
+
+    protected bool HasReachedDestination()
+    {
+        if (agent != null)
+        {
+            return agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending;
+        }
+        return false;
     }
 }
