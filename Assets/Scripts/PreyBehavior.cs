@@ -93,7 +93,7 @@ public class PreyBehavior : Animal
         {
             agent.isStopped = true;
             Debug.Log("Reached grazing point: " + grazingPoint);
-            
+
             if (Time.time - lastPredatorCheckTime > predatorCheckInterval)
             {
                 lastPredatorCheckTime = Time.time;
