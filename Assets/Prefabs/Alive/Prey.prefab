@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -1086165858558151290}
   m_Layer: 7
   m_Name: Prey
-  m_TagString: Untagged
+  m_TagString: Prey
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 7845509590033974961}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.31, y: 0.74, z: 5.02}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -124,19 +124,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preyState: 0
-  predator: {fileID: 4441295066377421289, guid: a33d1d889c914a44f8168fdeeef3e107, type: 3}
+  predator: {fileID: 0}
   herdLeader: {fileID: 3743147646211466591}
-  fieldofView: 90
-  sightDistance: 20
-  predatorCheckInterval: 5
-  alertTime: 5
-  fleeDistance: 5
-  alertDistance: 20
+  isGrazing: 0
   grazingRadius: 10
   grazingMoveSpeed: 2
   grazingTime: 5
-  migratingMoveSpeed: 4
+  fieldofView: 90
+  sightDistance: 20
+  detectionInterval: 0.2
+  alertDistance: 20
+  alertTime: 5
+  fleeDistance: 5
   fleeingSpeed: 8
+  migratingMoveSpeed: 4
 --- !u!54 &8863454226891821008
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -159,10 +160,10 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!195 &-1086165858558151290
 NavMeshAgent:

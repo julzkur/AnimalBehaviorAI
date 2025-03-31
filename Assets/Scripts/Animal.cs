@@ -4,8 +4,8 @@ using UnityEngine.AI;
 public abstract class Animal : MonoBehaviour
 {
     protected NavMeshAgent agent;
-    protected enum AnimalState { Idle, Moving }
-    protected AnimalState currentState;
+    public enum AnimalState { Idle, Moving }
+    public AnimalState currentState;
 
     protected virtual void Start()
     {
@@ -15,7 +15,7 @@ public abstract class Animal : MonoBehaviour
 
     protected virtual void Update()
     {
-        HandleState();
+
     }
 
     protected abstract void HandleState();

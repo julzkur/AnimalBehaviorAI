@@ -58,8 +58,7 @@ public class PredatorBehavior : Animal
     {
         // run after closest OR youngest/smallest prey
         // if loses line of sight, go to next one
-        // add stamina? if stamina out, go back into stalking/tracking
-        // add tracking behavior?
+        // add stamina? if stamina out, slow down if within x distance, otherwise go back into stalking/tracking
         // if captures prey, kill - x chance to succeed
         // add kill function
         // if prey escapes, back to chase.
@@ -68,8 +67,6 @@ public class PredatorBehavior : Animal
     {
         // after kill, eat.
         // nice to have: drag prey into obscured area, or back home
-        // if has babies, drag to babies
-        // if has mate, drag to mate
         // after eating, go home/rest
     }
     void Resting()
