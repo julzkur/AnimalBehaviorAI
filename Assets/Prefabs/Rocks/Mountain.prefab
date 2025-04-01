@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5724669026153757884}
   - component: {fileID: 7191918306712635641}
   - component: {fileID: 3094247085878089258}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mountain_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 9129437851646039370}
   - component: {fileID: 7243747638829914315}
   - component: {fileID: 6587651273168429964}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mountain_LOD3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +230,7 @@ GameObject:
   - component: {fileID: 2446650353991012584}
   - component: {fileID: 3985191469030392822}
   - component: {fileID: 5868522568180831352}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mountain_LOD2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -339,8 +339,7 @@ GameObject:
   - component: {fileID: 1686876263744498350}
   - component: {fileID: 20311896988711002}
   - component: {fileID: 3305443196741981816}
-  - component: {fileID: -7953265803630036655}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mountain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -439,26 +438,6 @@ MonoBehaviour:
   m_IgnoreFromBuild: 0
   m_ApplyToChildren: 1
   m_AffectedAgents: f46d2d58
---- !u!114 &-7953265803630036655
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5291748716855913832}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SerializedVersion: 0
-  m_OverrideArea: 1
-  m_Area: 2
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 0
-  m_ApplyToChildren: 1
-  m_AffectedAgents: a98c17ec
 --- !u!1 &6659051462573717311
 GameObject:
   m_ObjectHideFlags: 0
@@ -471,7 +450,7 @@ GameObject:
   - component: {fileID: 3811690676269627477}
   - component: {fileID: 6377790394196573119}
   - component: {fileID: 810683020031554628}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mountain_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}

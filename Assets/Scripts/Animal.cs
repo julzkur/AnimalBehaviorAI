@@ -1,15 +1,21 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public abstract class Animal : MonoBehaviour
 {
     protected NavMeshAgent agent;
-    public enum AnimalState { Idle, Moving }
+    public enum AnimalState { Idle, Moving, Dead }
     public AnimalState currentState;
+
 
     protected virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        if (agent == null)
+        {
+            Debug.LogError("NavMeshAgent is missing on " + gameObject.name);
+        }
         currentState = AnimalState.Idle;
     }
 

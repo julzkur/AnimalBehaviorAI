@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 4980957830326250289}
   m_Layer: 7
   m_Name: Predator
-  m_TagString: Untagged
+  m_TagString: Predator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,13 +30,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2181229356456465185}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.896, y: 0.797, z: 6.748}
+  m_LocalRotation: {x: -0, y: 0.7100097, z: -0, w: 0.704192}
+  m_LocalPosition: {x: 71.64, y: 9.94, z: 209.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90.471, z: 0}
 --- !u!33 &4767639309591603470
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -102,12 +102,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5c0921e7c6be41409280fc71bf63077, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentState: 0
   predatorState: 0
   prey: {fileID: 0}
+  isWandering: 0
+  wanderRadius: 10
+  wanderDistance: 20
+  wanderingMoveSpeed: 4
+  maxSpeed: 4
+  maxForce: 10
+  steeringWeight: 0.5
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleAvoidanceRadius: 5
+  obstacleDetectionRadius: 20
+  fieldofView: 120
+  sightDistance: 25
+  detectionInterval: 0.2
   hidingSpot: {fileID: 0}
-  killSpot: {fileID: 0}
-  killDistance: 0
+  isHiding: 0
+  stalkingDistance: 25
+  stalkTime: 0
+  chaseSpeed: 5
   chaseDistance: 0
+  stamina: 100
+  staminaDrainRate: 10
+  staminaRecoveryRate: 5
+  killDistance: 0
 --- !u!54 &-1758194594338353269
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -131,9 +153,9 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!65 &8615410893653482514
 BoxCollider:
@@ -165,14 +187,14 @@ NavMeshAgent:
   m_GameObject: {fileID: 2181229356456465185}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.81
+  m_Radius: 5
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 1
   m_BaseOffset: 0.5

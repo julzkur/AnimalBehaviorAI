@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8290847343608254618}
   - component: {fileID: 5096431778594194528}
   - component: {fileID: 5951317936369371369}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Spruce 1_LOD3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 3957619114696233818}
   - component: {fileID: 1364622433628113464}
   - component: {fileID: 4907473445732916163}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Spruce 1_LOD2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +185,7 @@ GameObject:
   - component: {fileID: 8471384957976961096}
   - component: {fileID: 8247950802318561608}
   - component: {fileID: 6288079858807654992}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Spruce 1_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -272,7 +272,7 @@ GameObject:
   - component: {fileID: 4183557006648532669}
   - component: {fileID: 1249998020031524557}
   - component: {fileID: 6701338192915449472}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Spruce 1_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -359,8 +359,8 @@ GameObject:
   - component: {fileID: 5104841407584419375}
   - component: {fileID: 1599429192446442190}
   - component: {fileID: 6712547243478264042}
-  - component: {fileID: -3352577831275166204}
-  m_Layer: 0
+  - component: {fileID: 4502966912786166305}
+  m_Layer: 8
   m_Name: Spruce 1 Normal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -440,23 +440,19 @@ CapsuleCollider:
   m_Height: 12.5
   m_Direction: 1
   m_Center: {x: 0, y: 6, z: 0}
---- !u!114 &-3352577831275166204
-MonoBehaviour:
+--- !u!208 &4502966912786166305
+NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6245837665073059591}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SerializedVersion: 0
-  m_OverrideArea: 1
-  m_Area: 5
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 0
-  m_ApplyToChildren: 1
-  m_AffectedAgents: ffffffff
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5

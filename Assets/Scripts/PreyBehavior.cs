@@ -7,20 +7,22 @@ using UnityEngine.AI;
 public class PreyBehavior : Animal
 {
     
-    public enum PreyState { Idle, Grazing, Herding, Alert, Fleeing }
+    public enum PreyState { Grazing, Herding, Alert, Fleeing }
     private Coroutine activeCoroutine;
 
     [Header("Setup")]
     public PreyState preyState;
     public Transform predator;
     public Transform herdLeader;
+    public LayerMask preyLayer;
+    private bool isDead = false;
     
 
     [Header("Grazing Behavior")]
 
     public bool isGrazing = false;
     public float grazingRadius = 10f;
-    public float grazingMoveSpeed = 2f;  // Speed for moving around
+    public float grazingMoveSpeed = 1f;  // Speed for moving around
     public float grazingTime = 5f; // Time spent eating before moving to a new spot
     private float lastGrazingTime = 0f;
     private Vector3 grazingPoint;   // Current grazing point
@@ -35,17 +37,18 @@ public class PreyBehavior : Animal
 
     [Header("Alert Behavior")]
     public bool isAlert = false;
+    public float herdAlertRadius = 15f;
     public float alertDistance = 20f;
     public float alertTime = 0f; // move away walking once this time passes and predator does not get closer
 
 
     [Header("Flee Behavior")]
     public float fleeRadius = 10f;
-    public float fleeingSpeed = 8f;
+    public float fleeingSpeed = 5f;
 
 
     [Header("Herding Behavior")]
-    public float migratingMoveSpeed = 4f;
+    public float migratingMoveSpeed = 2f;
 
 
     protected override void Start()
@@ -88,7 +91,7 @@ public class PreyBehavior : Animal
     {
         if (preyState == newState) return;
 
-        Debug.Log("State changed: " + preyState + " -> " + newState);
+        Debug.Log("Prey state changed: " + preyState + " -> " + newState);
 
         if (activeCoroutine != null)
         {
@@ -101,7 +104,6 @@ public class PreyBehavior : Animal
         HandleState();
 
     }
-
 
     protected override void HandleState()
     {
@@ -150,7 +152,6 @@ public class PreyBehavior : Animal
         }
         return false;
     }
-
 
 
     void GrazingBehavior()
@@ -247,7 +248,6 @@ public class PreyBehavior : Animal
         transform.rotation = targetRotation;
     }
 
-
     void AlertBehavior()
     {
         Debug.Log("Alerting herd members!");
@@ -256,9 +256,23 @@ public class PreyBehavior : Animal
         alertTime = 0f;
         isGrazing = false;
         isAlert = true;
-
-        activeCoroutine = StartCoroutine(AlertRoutine());
         
+        AlertHerd();
+        activeCoroutine = StartCoroutine(AlertRoutine());
+
+    }
+
+    void AlertHerd()
+    {
+        Collider[] herdMembers = Physics.OverlapSphere(transform.position, herdAlertRadius, preyLayer);
+        foreach (Collider member in herdMembers)
+        {
+            PreyBehavior otherDeer = member.GetComponent<PreyBehavior>();
+            if (otherDeer != null && otherDeer.preyState == PreyState.Grazing)
+            {
+                otherDeer.AlertBehavior();
+            }
+        }
     }
 
     IEnumerator AlertRoutine()
@@ -266,7 +280,7 @@ public class PreyBehavior : Animal
         
         // rotate FOV straight towards predator and keep it there for 3 seconds
         Quaternion rotationTowPred = Quaternion.LookRotation(predator.position - transform.position);
-        float rotationSpeed = 3f; // Adjust as needed
+        float rotationSpeed = 3f; 
         while (Quaternion.Angle(transform.rotation, rotationTowPred) > 1f)
         {
             Debug.Log("Looking at predator...");
@@ -304,43 +318,33 @@ public class PreyBehavior : Animal
              // once predator is out of alert distance, stop alerting and return to Grazing state
         }
         
-        Migrate();
+        yield return MoveToSafeDistance();
     }
 
-    void Migrate()
+    IEnumerator MoveToSafeDistance()
     {
         Debug.Log("Migrating away from predator... Just to be safe.");
+
         agent.isStopped = false;
         agent.speed = migratingMoveSpeed;
-
-        Vector3 awayFromPredator = (transform.position - predator.position).normalized * agent.speed * Time.deltaTime;
-        float distanceToPredator = Vector3.Distance(transform.position, predator.position);
-        float bufferDistance = 5f;
-
-        if (distanceToPredator < alertDistance + bufferDistance)
+        
+        while (Vector3.Distance(transform.position, predator.position) < alertDistance)
         {
-            agent.Move(awayFromPredator);
+            Vector3 directionAwayFromPredator = (transform.position - predator.position).normalized;
+            Vector3 targetPosition = transform.position + directionAwayFromPredator * alertDistance;
+
+            MoveTo(targetPosition);
+
+            Debug.Log("Moving further away...");
+
+            // Wait a bit before checking again
+            yield return new WaitForSeconds(1f);
         }
-        else
-        {
-            Debug.Log("Preadtor out of range, stopping migration");
-            StopCoroutine(AlertRoutine());
-            preyState = PreyState.Grazing;
-        }
+
+        Debug.Log("Safe distance reached. Returning to grazing.");
+        isAlert = false;
+        SetState(PreyState.Grazing);
     }
-
-    // void AlertHerd()
-    // {
-    //     Collider[] herdMates = Physics.OverlapSphere(transform.position, herdAlertRadius, preyLayer);
-    //     foreach (Collider mate in herdMates)
-    //     {
-    //         PreyAI otherDeer = mate.GetComponent<PreyAI>();
-    //         if (otherDeer != null && otherDeer.preyState == PreyState.Grazing)
-    //         {
-    //             otherDeer.EnterAlertState();
-    //         }
-    //     }
-    // }
 
     void FleeBehavior()
     {

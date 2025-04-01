@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &209113805881540284
+--- !u!1 &2459430728933746552
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,46 +8,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 63442562666816276}
-  - component: {fileID: 497954819269254714}
-  - component: {fileID: 2266185847572701500}
+  - component: {fileID: 1896141137034788683}
+  - component: {fileID: 5458843225788393370}
+  - component: {fileID: 4931728032293255078}
   m_Layer: 8
-  m_Name: Standard Rock 4_LOD0
+  m_Name: Spruce 1_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &63442562666816276
+--- !u!4 &1896141137034788683
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 209113805881540284}
+  m_GameObject: {fileID: 2459430728933746552}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5363016595506442609}
+  m_Father: {fileID: 7670277915900601858}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &497954819269254714
+--- !u!33 &5458843225788393370
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 209113805881540284}
-  m_Mesh: {fileID: 8099999722072016450, guid: 75ed99bf730d4404d9eec151c5d709ba, type: 3}
---- !u!23 &2266185847572701500
+  m_GameObject: {fileID: 2459430728933746552}
+  m_Mesh: {fileID: -6000851287274468697, guid: af68f6de6ee33a841b3b0572f41ddcad, type: 3}
+--- !u!23 &4931728032293255078
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 209113805881540284}
+  m_GameObject: {fileID: 2459430728933746552}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -64,6 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
+  - {fileID: 2100000, guid: 9c0a1cda53d749f40a30a84ed1657377, type: 2}
   - {fileID: 2100000, guid: b725cacc7387b1f4e991c4bdfcd832c8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -86,7 +87,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &2374116960163150098
+--- !u!1 &4415572319439828476
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,46 +95,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 664438353226641809}
-  - component: {fileID: 5154490632822703521}
-  - component: {fileID: 8247591339851728838}
+  - component: {fileID: 6897068383308088129}
+  - component: {fileID: 429270222289316457}
+  - component: {fileID: 5557044189963630294}
   m_Layer: 8
-  m_Name: Standard Rock 4_LOD2
+  m_Name: Spruce 1_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &664438353226641809
+--- !u!4 &6897068383308088129
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2374116960163150098}
+  m_GameObject: {fileID: 4415572319439828476}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5363016595506442609}
+  m_Father: {fileID: 7670277915900601858}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &5154490632822703521
+--- !u!33 &429270222289316457
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2374116960163150098}
-  m_Mesh: {fileID: 3869085708918980623, guid: 75ed99bf730d4404d9eec151c5d709ba, type: 3}
---- !u!23 &8247591339851728838
+  m_GameObject: {fileID: 4415572319439828476}
+  m_Mesh: {fileID: -7840320563928006911, guid: af68f6de6ee33a841b3b0572f41ddcad, type: 3}
+--- !u!23 &5557044189963630294
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2374116960163150098}
+  m_GameObject: {fileID: 4415572319439828476}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -150,6 +151,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
+  - {fileID: 2100000, guid: 9c0a1cda53d749f40a30a84ed1657377, type: 2}
   - {fileID: 2100000, guid: b725cacc7387b1f4e991c4bdfcd832c8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -172,7 +174,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &4940621509941333224
+--- !u!1 &4874711234907831904
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -180,46 +182,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7871604587590498748}
-  - component: {fileID: 8580195611559422516}
-  - component: {fileID: 7752068298272002716}
+  - component: {fileID: 70033093103951591}
+  - component: {fileID: 6092728552221800153}
+  - component: {fileID: 3045815418425989109}
   m_Layer: 8
-  m_Name: Standard Rock 4_LOD3
+  m_Name: Spruce 1_LOD3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7871604587590498748
+--- !u!4 &70033093103951591
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4940621509941333224}
+  m_GameObject: {fileID: 4874711234907831904}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5363016595506442609}
+  m_Father: {fileID: 7670277915900601858}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &8580195611559422516
+--- !u!33 &6092728552221800153
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4940621509941333224}
-  m_Mesh: {fileID: -8281880079595770183, guid: 75ed99bf730d4404d9eec151c5d709ba, type: 3}
---- !u!23 &7752068298272002716
+  m_GameObject: {fileID: 4874711234907831904}
+  m_Mesh: {fileID: -6872447495601334998, guid: af68f6de6ee33a841b3b0572f41ddcad, type: 3}
+--- !u!23 &3045815418425989109
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4940621509941333224}
+  m_GameObject: {fileID: 4874711234907831904}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -236,6 +238,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
+  - {fileID: 2100000, guid: 9c0a1cda53d749f40a30a84ed1657377, type: 2}
   - {fileID: 2100000, guid: b725cacc7387b1f4e991c4bdfcd832c8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -258,7 +261,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &5263544357825583009
+--- !u!1 &6020415169049830574
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -266,46 +269,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4368535507581140495}
-  - component: {fileID: 1872481526422892806}
-  - component: {fileID: 4271797469380347338}
+  - component: {fileID: 1409572793907677932}
+  - component: {fileID: 6064299469295437251}
+  - component: {fileID: 6044961890480611125}
   m_Layer: 8
-  m_Name: Standard Rock 4_LOD1
+  m_Name: Spruce 1_LOD2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4368535507581140495
+--- !u!4 &1409572793907677932
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5263544357825583009}
+  m_GameObject: {fileID: 6020415169049830574}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5363016595506442609}
+  m_Father: {fileID: 7670277915900601858}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1872481526422892806
+--- !u!33 &6064299469295437251
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5263544357825583009}
-  m_Mesh: {fileID: -582837112278316665, guid: 75ed99bf730d4404d9eec151c5d709ba, type: 3}
---- !u!23 &4271797469380347338
+  m_GameObject: {fileID: 6020415169049830574}
+  m_Mesh: {fileID: -8119823694327777837, guid: af68f6de6ee33a841b3b0572f41ddcad, type: 3}
+--- !u!23 &6044961890480611125
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5263544357825583009}
+  m_GameObject: {fileID: 6020415169049830574}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -322,6 +325,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
+  - {fileID: 2100000, guid: 9c0a1cda53d749f40a30a84ed1657377, type: 2}
   - {fileID: 2100000, guid: b725cacc7387b1f4e991c4bdfcd832c8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -344,7 +348,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &5727226116581551215
+--- !u!1 &8207823443394101836
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -352,73 +356,73 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5363016595506442609}
-  - component: {fileID: 5605880384473908928}
-  - component: {fileID: 662483218556227732}
+  - component: {fileID: 7670277915900601858}
+  - component: {fileID: 1747862462921209216}
+  - component: {fileID: 4236527944420208021}
   m_Layer: 8
-  m_Name: Standard Rock 4
+  m_Name: Spruce 1 Large
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5363016595506442609
+--- !u!4 &7670277915900601858
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5727226116581551215}
+  m_GameObject: {fileID: 8207823443394101836}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.823211, y: 2.997841, z: 153.105}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 21.868258, y: 5.2714972, z: 146.38228}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 63442562666816276}
-  - {fileID: 4368535507581140495}
-  - {fileID: 664438353226641809}
-  - {fileID: 7871604587590498748}
+  - {fileID: 6897068383308088129}
+  - {fileID: 1896141137034788683}
+  - {fileID: 1409572793907677932}
+  - {fileID: 70033093103951591}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!205 &5605880384473908928
+--- !u!205 &1747862462921209216
 LODGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5727226116581551215}
+  m_GameObject: {fileID: 8207823443394101836}
   serializedVersion: 2
-  m_LocalReferencePoint: {x: 0.02443397, y: 1.2807173, z: 0.145558}
-  m_Size: 2.8246305
+  m_LocalReferencePoint: {x: -0.22166038, y: 6.053178, z: -0.0018606186}
+  m_Size: 12.568602
   m_FadeMode: 1
   m_AnimateCrossFading: 1
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.30150002
+  - screenRelativeHeight: 0.5003869
     fadeTransitionWidth: 0
     renderers:
-    - renderer: {fileID: 2266185847572701500}
-  - screenRelativeHeight: 0.15054336
+    - renderer: {fileID: 5557044189963630294}
+  - screenRelativeHeight: 0.29965863
     fadeTransitionWidth: 0
     renderers:
-    - renderer: {fileID: 4271797469380347338}
-  - screenRelativeHeight: 0.07074744
+    - renderer: {fileID: 4931728032293255078}
+  - screenRelativeHeight: 0.19594689
     fadeTransitionWidth: 0
     renderers:
-    - renderer: {fileID: 8247591339851728838}
-  - screenRelativeHeight: 0.026579719
+    - renderer: {fileID: 6044961890480611125}
+  - screenRelativeHeight: 0.046932496
     fadeTransitionWidth: 0
     renderers:
-    - renderer: {fileID: 7752068298272002716}
+    - renderer: {fileID: 3045815418425989109}
   m_Enabled: 1
---- !u!64 &662483218556227732
-MeshCollider:
+--- !u!136 &4236527944420208021
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5727226116581551215}
+  m_GameObject: {fileID: 8207823443394101836}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -430,7 +434,8 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8099999722072016450, guid: 75ed99bf730d4404d9eec151c5d709ba, type: 3}
+  serializedVersion: 2
+  m_Radius: 0.3
+  m_Height: 12.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 6, z: 0}

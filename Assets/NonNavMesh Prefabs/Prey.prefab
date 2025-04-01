@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 9122612507103716547}
   - component: {fileID: 8863454226891821008}
   - component: {fileID: 7248837056895791892}
-  - component: {fileID: -1086165858558151290}
   m_Layer: 7
   m_Name: Prey
   m_TagString: Predator
@@ -109,6 +108,7 @@ MonoBehaviour:
   wanderRadius: 10
   wanderDistance: 20
   wanderingMoveSpeed: 4
+  rotationSpeed: 5
   maxSpeed: 4
   maxForce: 10
   steeringWeight: 0.5
@@ -130,6 +130,7 @@ MonoBehaviour:
   staminaDrainRate: 10
   staminaRecoveryRate: 5
   killDistance: 0
+  wanderUpdateInterval: 2
 --- !u!54 &8863454226891821008
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -178,25 +179,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!195 &-1086165858558151290
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7845509590033974961}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 5
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
-  m_AutoRepath: 1
-  m_Height: 1
-  m_BaseOffset: 0.5
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
