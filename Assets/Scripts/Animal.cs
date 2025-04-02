@@ -52,4 +52,9 @@ public abstract class Animal : MonoBehaviour
         }
         return false;
     }
+
+    protected int GetRandomIndex()
+    {
+        return Random.Range(0, 5);  // Get a random index between 0 and 5
+    }
 }

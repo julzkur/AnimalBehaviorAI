@@ -16,7 +16,12 @@ public class PreyBehavior : Animal
     public Transform herdLeader;
     public LayerMask preyLayer;
     private bool isDead = false;
-    
+
+    [Header("Steering")]
+    public float safeDistance = 25f; // Distance to keep from the predator
+    public float jitterAmount = 0.5f; // Amount of random movement
+    public LayerMask obstacleLayerMask; // Layer mask for obstacles
+
 
     [Header("Grazing Behavior")]
 
@@ -24,7 +29,6 @@ public class PreyBehavior : Animal
     public float grazingRadius = 10f;
     public float grazingMoveSpeed = 1f;  // Speed for moving around
     public float grazingTime = 5f; // Time spent eating before moving to a new spot
-    private float lastGrazingTime = 0f;
     private Vector3 grazingPoint;   // Current grazing point
 
 
@@ -33,18 +37,22 @@ public class PreyBehavior : Animal
     public float sightDistance = 20f;
     private float nextDetectionTime = 0f;
     public float detectionInterval = 0.2f;
+    private Vector3 lastKnownPredatorPosition = Vector3.zero;
+    private float lastKnownPredatorDistance = 0f;
     
 
     [Header("Alert Behavior")]
     public bool isAlert = false;
-    public float herdAlertRadius = 15f;
+    public float herdAlertRadius = 20f;
     public float alertDistance = 20f;
     public float alertTime = 0f; // move away walking once this time passes and predator does not get closer
 
 
     [Header("Flee Behavior")]
-    public float fleeRadius = 10f;
-    public float fleeingSpeed = 5f;
+    public float fleeRadius = 15f;
+    public float fleeingSpeed = 6f;
+    public float avoidanceBlendFactor = 0.5f; // how much you want avoidance to affect fleeing
+
 
 
     [Header("Herding Behavior")]
@@ -55,8 +63,9 @@ public class PreyBehavior : Animal
     {
         base.Start();
         SetState(PreyState.Grazing);
-        predator = GameObject.Find("Predator").transform;
-        herdLeader = GameObject.Find("HerdLeader").transform;
+        predator = GameObject.FindGameObjectWithTag("Predator").transform;
+        //herdLeader = GameObject.Find("HerdLeader").transform;
+        HandleState();
         
     }
 
@@ -64,27 +73,62 @@ public class PreyBehavior : Animal
     {
         base.Update();
         // continuous detection of predator (every 0.2 seconds for performance)
-        if (Time.time >= nextDetectionTime && (preyState == PreyState.Grazing || preyState == PreyState.Herding))
+        if (!isDead)
         {
-            nextDetectionTime = Time.time + detectionInterval;
-
-            bool predatorDetected = DetectPredator();
-
-            if (predatorDetected && preyState != PreyState.Alert)
+            if (Time.time >= nextDetectionTime)
             {
-                isGrazing = false;
-                StopAllCoroutines();
-                SetState(PreyState.Alert);
-                return; // Stop further processing
+                if (preyState == PreyState.Grazing || preyState == PreyState.Herding)
+                {
+                    nextDetectionTime = Time.time + detectionInterval;
+
+                    bool predatorDetected = DetectPredator();
+
+                    if (predatorDetected && preyState != PreyState.Alert)
+                    {
+                        isGrazing = false;
+                        agent.isStopped = true;
+                        StopAllCoroutines();
+                        SetState(PreyState.Alert);
+                        return; 
+                    }
+
+                    if (!predatorDetected && preyState == PreyState.Alert)
+                    {
+                        SetState(PreyState.Grazing);
+                    }
+
+                    if (Vector3.Distance(transform.position, predator.position) < fleeRadius)
+                    {
+                        isGrazing = false;
+                        StopAllCoroutines();
+                        SetState(PreyState.Fleeing);
+                        return; 
+                        
+                    }
+                }
+                if (preyState == PreyState.Fleeing)
+                {
+                    AlertHerd();
+                }
             }
 
-            if (!predatorDetected && preyState == PreyState.Alert)
+            if (Time.time >= nextDetectionTime && preyState == PreyState.Alert && lastKnownPredatorDistance < fleeRadius)
             {
-                SetState(PreyState.Grazing);
+                Debug.Log("Predator too close! Switching to Fleeing state.");
+                StopAllCoroutines();
+                SetState(PreyState.Fleeing);
+            }
+
+        }
+        else
+        {
+            // If the prey is dead, stop all coroutines and disable the NavMeshAgent
+            if (activeCoroutine != null)
+            {
+                StopCoroutine(activeCoroutine);
+                activeCoroutine = null;
             }
         }
-
-        // listen for alerts from other herd members
     } 
 
     void SetState(PreyState newState)
@@ -99,6 +143,7 @@ public class PreyBehavior : Animal
             activeCoroutine = null;
         }
 
+        fleeRadius = 15f;
         preyState = newState;
 
         HandleState();
@@ -135,7 +180,6 @@ public class PreyBehavior : Animal
                 Vector3 directionToPredator = predator.position - transform.position;
                 float angleToPredator = Vector3.Angle(transform.forward, directionToPredator);
 
-                // If predator is in FOV and within distance
                 if (angleToPredator < fieldofView / 2f && directionToPredator.magnitude < sightDistance)
                 {
                     RaycastHit rayHit;
@@ -143,7 +187,11 @@ public class PreyBehavior : Animal
                     {
                         if (rayHit.transform.CompareTag("Predator"))
                         {
-                            Debug.Log("Predator spotted! Alert!");
+                            predator = hit.transform;
+                            lastKnownPredatorDistance = Vector3.Distance(transform.position, predator.position);
+                            lastKnownPredatorPosition = predator.position;
+
+                            predator.GetComponent<PredatorBehavior>().isSpotted = true;
                             return true;
                         }
                     }
@@ -156,9 +204,8 @@ public class PreyBehavior : Animal
 
     void GrazingBehavior()
     {
-        // if is leader, add function to check on herd.
-
         agent.speed = grazingMoveSpeed;
+        agent.acceleration = 7f;
         agent.angularSpeed = 120f;
         isGrazing = true;
 
@@ -168,7 +215,7 @@ public class PreyBehavior : Animal
 
     IEnumerator GrazingRoutine()
     {
-        while (preyState == PreyState.Grazing) // Keeps grazing in a loop
+        while (preyState == PreyState.Grazing)
         {
             agent.isStopped = true; 
             
@@ -256,6 +303,7 @@ public class PreyBehavior : Animal
         alertTime = 0f;
         isGrazing = false;
         isAlert = true;
+        fleeRadius = 18f;
         
         AlertHerd();
         activeCoroutine = StartCoroutine(AlertRoutine());
@@ -270,8 +318,33 @@ public class PreyBehavior : Animal
             PreyBehavior otherDeer = member.GetComponent<PreyBehavior>();
             if (otherDeer != null && otherDeer.preyState == PreyState.Grazing)
             {
-                otherDeer.AlertBehavior();
+                otherDeer.AlertedByOtherPrey();
             }
+        }
+    }
+
+    void AlertedByOtherPrey()
+    {
+        Debug.Log("Alerted by other prey!");
+
+        float alertTimer = 0f;
+        if (preyState != PreyState.Alert)
+        {
+            // look at predator for 2 seconds and then enter alert state
+            while (alertTimer < 2f && Vector3.Distance(transform.position, predator.position) > alertDistance)
+            {
+                alertTimer += Time.deltaTime;
+                agent.isStopped = true;
+                LookAtPredator();
+                if (Vector3.Distance(transform.position, predator.position) < alertDistance)
+                {
+                    Debug.Log("OMG Predator! FLEEING!");
+                    isAlert = false;
+                    SetState(PreyState.Fleeing);
+                    return;
+                }
+            }
+            SetState(PreyState.Alert);
         }
     }
 
@@ -279,14 +352,7 @@ public class PreyBehavior : Animal
     {
         
         // rotate FOV straight towards predator and keep it there for 3 seconds
-        Quaternion rotationTowPred = Quaternion.LookRotation(predator.position - transform.position);
-        float rotationSpeed = 3f; 
-        while (Quaternion.Angle(transform.rotation, rotationTowPred) > 1f)
-        {
-            Debug.Log("Looking at predator...");
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotationTowPred, Time.deltaTime * rotationSpeed);
-            yield return null;
-        }
+        LookAtPredator();
 
         while (alertTime < 3f) 
         {
@@ -295,18 +361,16 @@ public class PreyBehavior : Animal
             if (!DetectPredator()) 
             {
                 Debug.Log("Predator out of sight. Returning to grazing.");
-
-                preyState = PreyState.Grazing;
+                SetState(PreyState.Grazing);
                 agent.isStopped = false;
                 yield break;
             }
-
-            if (Vector3.Distance(transform.position, predator.position) < fleeRadius)
+            float distanceToPredator = Vector3.Distance(transform.position, predator.position);
+            if (distanceToPredator < fleeRadius)
             {
                 Debug.Log("Predator too close! FLEEING!");
-
-                preyState = PreyState.Fleeing;
-                agent.isStopped = false;
+                isAlert = false;
+                SetState(PreyState.Fleeing);
                 yield break;
             }
 
@@ -350,12 +414,94 @@ public class PreyBehavior : Animal
     {
         Debug.Log("Fleeing from predator!");
         agent.speed = fleeingSpeed;
-        // if is predator is spotted, use predator location to flee away from it, preferably moving with herd leader
-        // check for predator regularly
-        // after certain distance from predator or until predator is no longer in line of sight, stop fleeing
-        // go into alert mode for x amount of time
-        // if is caught, fight (percentage chance to escape)
+        agent.isStopped = false;
+        agent.acceleration = 10f;
+        predator.GetComponent<PredatorBehavior>().isSpotted = true;
+
+        StartCoroutine(FleeRoutine());
+    
     }
+
+    IEnumerator FleeRoutine()
+    {
+
+        while (Vector3.Distance(transform.position, predator.position) < safeDistance)
+        {
+            Vector3 fleeDirection = (transform.position - predator.position).normalized;
+            Vector3 jitter = new Vector3(Random.Range(-jitterAmount, jitterAmount), 0, Random.Range(-jitterAmount, jitterAmount));
+            Vector3 targetPosition = transform.position + fleeDirection * 10f + jitter;
+
+            Vector3 avoidance = AvoidObstacles();
+            Vector3 blendedDirection = fleeDirection + avoidance * avoidanceBlendFactor;
+            targetPosition = transform.position + blendedDirection * 7f;
+
+            // Ensure target position is on the NavMesh
+            if (NavMesh.SamplePosition(targetPosition, out NavMeshHit hit, 5f, NavMesh.AllAreas))
+            {
+                agent.SetDestination(hit.position);
+            }
+            else
+            {
+                Debug.Log("Flee target position not on NavMesh, adjusting...");
+                if (NavMesh.SamplePosition(transform.position, out hit, 10f, NavMesh.AllAreas))
+                {
+                    agent.SetDestination(hit.position);
+                }
+            }
+
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        Debug.Log("Safe distance reached.");
+        //look towards predator for a moment to make sure he's not following
+        LookAtPredator();
+        yield return new WaitForSeconds(2f);
+        Debug.Log("Predator not following. Alert mode activated.");
+        SetState(PreyState.Alert);
+    }
+
+    void LookAtPredator()
+    {
+        Quaternion rotationTowPred = Quaternion.LookRotation(predator.position - transform.position);
+        float rotationSpeed = 3f; 
+
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotationTowPred, Time.deltaTime * rotationSpeed);
+    }
+
+    Vector3 AvoidObstacles()
+    {
+        RaycastHit hit;
+        Vector3 avoidance = Vector3.zero;
+        float detectionDistance = 7f; 
+
+        if (Physics.Raycast(transform.position, transform.forward, out hit, detectionDistance, obstacleLayerMask))
+        {
+            avoidance += Vector3.Reflect(transform.forward, hit.normal);
+        }
+
+        if (Physics.Raycast(transform.position, transform.right, out hit, detectionDistance, obstacleLayerMask))
+        {
+            avoidance -= transform.right * 1.5f;
+        }
+
+        if (Physics.Raycast(transform.position, -transform.right, out hit, detectionDistance, obstacleLayerMask))
+        {
+            avoidance += transform.right * 1.5f;
+        }
+
+        return avoidance.normalized;
+    }
+
+    public void Die()
+    {
+        Debug.Log("Prey is dead!");
+        isDead = true;
+        agent.isStopped = true;
+        agent.enabled = false; // Disable NavMeshAgent to stop movement
+        gameObject.SetActive(false); // Deactivate the prey object
+    }
+
+
 
         void HerdingBehavior() // Boids/Flocking behavior
     {

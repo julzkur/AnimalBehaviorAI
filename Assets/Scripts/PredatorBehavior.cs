@@ -12,20 +12,26 @@ public class PredatorBehavior : Animal
     public PredatorState predatorState;
     public Transform prey;
     private bool isDead = false;
+
+
+    [Header("Steering")]
+
+    public float rotationSpeed = 5f; 
+    public LayerMask obstacleLayerMask; 
+    public float jitterAmount = 0.5f; 
+    float preyPredictionFactor = 0.5f; // predicts prey movement
+    float obstacleAvoidanceStrength = 2f;
+    float stuckTimeThreshold = 2f;  // Time threshold to detect stuck state
+    float stuckTime = 0f;
     
 
     [Header("Wandering Behavior")]
     public bool isWandering = false;
     public float wanderRadius = 15f;
     public float wanderDistance = 10f;
-    public float wanderingMoveSpeed = 4f;
+    public float wanderingMoveSpeed = 3f;
     private Vector3 wanderTarget;
-    public float rotationSpeed = 5f; // Speed of rotation to face the target direction
-    public LayerMask obstacleLayerMask; // Layer mask for obstacles
-    public float jitterAmount = 0.5f; // Amount of jitter to apply to the wander target
     
-
-
 
     [Header("Prey Detection")]
     public float fieldofView = 120f;
@@ -35,52 +41,139 @@ public class PredatorBehavior : Animal
     
 
     [Header("Stalking Behavior")]
-    public Transform hidingSpot;
-    public bool isHiding = false;
     public float stalkingDistance = 25f;
+    public float stalkingSpeed = 2f;
     public float stalkTime = 0f; 
-    private bool isSpotted = false;
+    public bool isSpotted = false;
+    public LayerMask preyLayerMask; 
+    private Vector3 lastKnownPreyPosition; 
 
 
     [Header("Chasing Behavior")]
     public float chaseSpeed = 5f;
-    public float chaseDistance;
+    public float staminaModifier = 1.5f;
+    public float chaseDistance = 10f;
     public float stamina = 100f;
     public float staminaDrainRate = 10f;
     public float staminaRecoveryRate = 5f;
+    float timeSinceLastSeen = 0f;  
+    float lostSightDuration = 3f;  // predator gives up and goes back to wandering after x seconds
 
 
     [Header("Kill Behavior")]
-    public float killDistance;
+    public float killDistance = 8.5f;
     private float killChance = 0.5f;
-    private float nextWanderUpdateTime = 0f; // Timer for wander updates
-    public float wanderUpdateInterval = 2f; // Time interval between updates
+    private float nextWanderUpdateTime = 0f; 
+    public float wanderUpdateInterval = 2f; 
 
     protected override void Start()
     {
         base.Start();
         SetState(PredatorState.Wandering);
         wanderTarget = transform.position + Random.insideUnitSphere * wanderRadius;
-        //prey = GameObject.FindGameObjectWithTag("Prey").transform;
+        HandleState();
         
     }
 
     protected override void Update()
     {
+        if (prey == null || !prey.gameObject.activeInHierarchy)
+        {
+            DetectPrey();
+        }
+
+        if (agent.velocity.sqrMagnitude < 0.1f)
+        {
+            stuckTime += Time.deltaTime;
+            if (stuckTime > stuckTimeThreshold)
+            {
+                // Recalculate the path
+                Vector3 newDestination = transform.position + Random.insideUnitSphere * wanderRadius;
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(newDestination, out hit, 4f, NavMesh.AllAreas))
+                {
+                    agent.SetDestination(hit.position);
+                }
+                else
+                {
+                    Debug.LogWarning("Failed to find a valid new destination on the NavMesh.");
+                }
+                stuckTime = 0f;
+            }
+        }
+        else
+        {
+            stuckTime = 0f;  // Reset stuck time if agent is moving
+        }
+
         if (Time.time >= nextDetectionTime)
         {
-
             nextDetectionTime = Time.time + detectionInterval;
 
+            bool preyDetected = DetectPrey();
 
-            HandleState();
+            switch (predatorState)
+            {
+                case PredatorState.Wandering:
+                    if (preyDetected && !isSpotted && Vector3.Distance(transform.position, prey.position) < stalkingDistance)
+                    {
+                        isWandering = false;
+                        StopAllCoroutines();
+                        SetState(PredatorState.Stalking);
+                        return; 
+                    }
+                    break;
+
+                case PredatorState.Stalking:
+                    if (preyDetected && isSpotted && Vector3.Distance(transform.position, prey.position) < stalkingDistance)
+                    {
+                        isSpotted = true; // Prey is now spotted
+                        StopAllCoroutines();
+                        SetState(PredatorState.Chasing);
+                    }
+                    break;
+
+                case PredatorState.Chasing:
+                    if (!preyDetected)
+                    {
+                        timeSinceLastSeen += Time.deltaTime;
+
+                        if (timeSinceLastSeen > lostSightDuration)
+                        {
+                            Debug.Log("Lost sight of prey! Switching to wandering.");
+                            SetState(PredatorState.Wandering);
+                        }
+                    }
+                    else
+                    {
+                        timeSinceLastSeen = 0f;
+                    }
+                    break;
+
+                    
+            }
+            if (Vector3.Distance(transform.position, prey.position) < chaseDistance && !isSpotted)
+            {
+                SetState(PredatorState.Chasing);
+            }
+
+            if (!preyDetected && predatorState != PredatorState.Wandering)
+            {
+                SetState(PredatorState.Wandering);
+            }
         }
+        
+        if (Vector3.Distance(transform.position, prey.position) < stalkingDistance && prey.GetComponent<PreyBehavior>().preyState == PreyBehavior.PreyState.Fleeing)
+        {
+            isWandering = false;
+            SetState(PredatorState.Chasing);
+        }
+
 
     }
 
     void SetState(PredatorState newState)
     {
-        Debug.Log("SetState called with newState: " + newState + ", current state: " + predatorState);
         if (predatorState == newState) return;
 
         Debug.Log("Predator state changed: " + predatorState + " -> " + newState);
@@ -116,6 +209,45 @@ public class PredatorBehavior : Animal
         }
     }
 
+    bool DetectPrey()
+    {
+        // OverlapSphere for less performance-heavy detection, only shoots ray if prey is nearby
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, sightDistance + 2f);
+        Transform closestPrey = null;
+        float closestDistance = sightDistance;
+
+        foreach (Collider hit in hitColliders)
+        {
+            if (hit.CompareTag("Prey"))
+            {
+                Vector3 directionToPrey = hit.transform.position - transform.position;
+                float angleToPredator = Vector3.Angle(transform.forward, directionToPrey);
+
+                // If prey is in FOV and within distance
+                if (angleToPredator < fieldofView / 2f && directionToPrey.magnitude < closestDistance)
+                {
+                    RaycastHit rayHit;
+                    if (Physics.Raycast(transform.position, directionToPrey.normalized, out rayHit, sightDistance))
+                    {
+                        if (rayHit.transform.CompareTag("Prey"))
+                        {
+                            closestPrey = rayHit.transform; 
+                            closestDistance = directionToPrey.magnitude;
+                            lastKnownPreyPosition = closestPrey.position; 
+                        }
+                    }
+                }
+            }
+        }
+        if (closestPrey != null)
+        {
+            prey = closestPrey;
+            return true;
+        }
+        prey = null;
+        return false;
+    }
+
     void WanderingBehavior()
     {
         if (activeCoroutine != null)
@@ -126,8 +258,8 @@ public class PredatorBehavior : Animal
 
         agent.speed = wanderingMoveSpeed;
         agent.isStopped = false;
-
-        Debug.Log("Wandering...");
+        agent.acceleration = 8f;
+        RecoverStamina();
 
         activeCoroutine = StartCoroutine(WanderRoutine());
     }
@@ -143,7 +275,7 @@ public class PredatorBehavior : Animal
             Vector3 avoidance = AvoidObstacles();
             targetPosition += avoidance * 3f;
 
-            if (NavMesh.SamplePosition(targetPosition, out NavMeshHit hit, 5f, NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(targetPosition, out NavMeshHit hit, 4f, NavMesh.AllAreas))
             {
                 agent.SetDestination(hit.position);
             }
@@ -162,7 +294,6 @@ public class PredatorBehavior : Animal
 
     Vector3 AvoidObstacles()
     {
-        Debug.Log("Avoiding obstacles...");
         RaycastHit hit;
         Vector3 avoidance = Vector3.zero;
         float detectionDistance = 10f; 
@@ -170,19 +301,16 @@ public class PredatorBehavior : Animal
         if (Physics.Raycast(transform.position, transform.forward, out hit, detectionDistance, obstacleLayerMask))
         {
             avoidance += Vector3.Reflect(transform.forward, hit.normal);
-            Debug.Log("Obstacle ahead! Steering away.");
         }
 
         if (Physics.Raycast(transform.position, transform.right, out hit, detectionDistance, obstacleLayerMask))
         {
             avoidance -= transform.right * 1.5f; 
-            Debug.Log("Obstacle detected on the right! Steering left.");
         }
 
         if (Physics.Raycast(transform.position, -transform.right, out hit, detectionDistance, obstacleLayerMask))
         {
             avoidance += transform.right * 1.5f; 
-            Debug.Log("Obstacle detected on the left! Steering right.");
         }
 
         return avoidance.normalized; 
@@ -190,29 +318,166 @@ public class PredatorBehavior : Animal
 
     
     void StalkingBehavior()
-    {
-        // after spotting prey, if predator has not been spotted (if prey is not fleeing), hide
-        // use objects to put between prey and predator, maybe add grass which predator
-        // hides in and obscures view/hides predator
-        // moves between hiding spots as close as possible, if next hiding spot is closer to prey
-        // than last hiding spot, move (crouch) to next hiding spot.
-        // if spotted, go into chase.
-        // if no other hiding spot is closer, go into chase
+    {  
+        Debug.Log("Stalking...");
+        agent.speed = stalkingSpeed;
+
+        Vector3 preyPosition = GetClosestPreyPosition();
+        if (Vector3.Distance(agent.destination, preyPosition) > 0.5f) 
+        {
+            agent.SetDestination(preyPosition);
+        }
+
+        if (Vector3.Distance(transform.position, preyPosition) < chaseDistance)
+        {
+            SetState(PredatorState.Chasing);
+        }
+        
     }
+
+    Vector3 GetClosestPreyPosition()
+    {
+        Collider[] preyInRange = Physics.OverlapSphere(transform.position, sightDistance, preyLayerMask);
+        // if prey not in range, go to last known position of prey
+        if (preyInRange.Length == 0)
+        {
+            return lastKnownPreyPosition; // Return current position if no prey is found
+        }
+
+        Transform closestPrey = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (var preyCollider in preyInRange)
+        {
+            float distanceToPrey = Vector3.Distance(transform.position, preyCollider.transform.position);
+            if (distanceToPrey < closestDistance)
+            {
+                closestDistance = distanceToPrey;
+                closestPrey = preyCollider.transform;
+            }
+        }
+        
+        if (closestPrey != null)
+        {
+            prey = closestPrey; // Update prey reference
+            lastKnownPreyPosition = closestPrey.position;
+        }
+
+        return lastKnownPreyPosition;
+    }
+
     void ChasingBehavior()
     {
-        // make it so it takes some time to reach max speed
-        // run after closest prey
-        // if loses line of sight, go to next one in line of sight, otherwise go to search?
-        // if stamina out, slow down to wandering speed, go to last known poisition of prey
-        // if captures prey, kill - x chance to succeed
-        // if prey escapes, back to chase.
+        Debug.Log("Chasing prey!");
+        agent.speed = chaseSpeed;
+        agent.isStopped = false;
+        agent.acceleration = 10f;
+
+        activeCoroutine = StartCoroutine(ChaseRoutine());
     }
+
+    IEnumerator ChaseRoutine()
+    {
+        
+        while (predatorState == PredatorState.Chasing)
+        {
+
+            if (stamina > 70f)
+            {
+                stamina -= staminaDrainRate * Time.deltaTime; // Recover stamina when above 50
+                agent.speed = chaseSpeed + staminaModifier;  // Boost speed when stamina is not low
+            }
+            else if (stamina <= 70f && stamina > 30f)
+            {
+                stamina -= staminaRecoveryRate * Time.deltaTime; // Drain stamina when above 30
+                agent.speed = chaseSpeed;  // Normal speed when stamina is low
+            }
+            else if (stamina <= 30f)
+            {
+                stamina += staminaDrainRate * Time.deltaTime;
+                agent.speed = chaseSpeed / 2f;
+            }
+
+            stamina = Mathf.Clamp(stamina, 0f, 100f);
+
+            Debug.Log("Stamina: " + stamina);
+
+            Vector3 preyPosition = GetClosestPreyPosition();
+
+            if (!DetectPrey())
+            {
+                agent.SetDestination(lastKnownPreyPosition); 
+                timeSinceLastSeen += Time.deltaTime;
+
+                if (timeSinceLastSeen > lostSightDuration)
+                {
+                    Debug.Log("Lost sight of prey! Switching to wandering.");
+                    SetState(PredatorState.Wandering);
+                    yield break; 
+                }
+            }
+            else
+            {
+                timeSinceLastSeen = 0f; 
+                lastKnownPreyPosition = preyPosition;
+            }
+
+            Vector3 preyVelocity = (preyPosition - lastKnownPreyPosition) / Time.deltaTime;
+            Vector3 predictedPreyPosition = preyPosition + preyVelocity * preyPredictionFactor;
+
+            Vector3 avoidance = AvoidObstacles();
+            Vector3 targetPosition = predictedPreyPosition + avoidance * obstacleAvoidanceStrength;
+
+            if (Vector3.Distance(agent.destination, targetPosition) > 0.5f) 
+            {
+                agent.SetDestination(targetPosition);
+            }
+
+            if (Vector3.Distance(transform.position, prey.position) <= killDistance)
+            {
+                Debug.Log("Prey caught! Rolling dice to see if predator kills it.");
+                float randomValue = Random.Range(0f, 1f);
+                if (randomValue < killChance)
+                {
+                    Debug.Log("Success!");
+                    SetState(PredatorState.Kill);
+                }
+                else
+                {
+                    Debug.Log("Predator failed to kill the prey.");
+                    yield return new WaitForSeconds(1f); // Wait for a second before trying again
+                }
+            }
+
+            yield return null; 
+        }
+
+        // run after closest prey
+        // add staminaModifier (1f) to speed for x seconds
+        // if stamina out, slow down to chase speed until stamina recovers
+        // if loses sight of prey (!DetectPrey()), go to last known position, if no prey, back to wandering
+        // if distance to prey is less than killDistance, SetState(PredatorState.Kill);
+    }
+    void RecoverStamina()
+    {
+        if (stamina < 100f)
+        {
+            stamina += staminaRecoveryRate * Time.deltaTime;
+        }
+        else if (stamina > 100f)
+        {
+            stamina = 100f; // Clamp stamina to a maximum of 100
+        }
+        stamina = Mathf.Clamp(stamina, 0f, 100f); 
+    }
+
     void KillBehavior()
     {
-        // after kill, eat.
-        // nice to have: drag prey into obscured area, or back home
-        // after eating, go home/rest
+        Debug.Log("Killing prey!");
+        prey.GetComponent<PreyBehavior>().Die();
+        
+        SetState(PredatorState.Wandering); 
+
     }
 
     void OnDrawGizmosSelected()
@@ -229,12 +494,11 @@ public class PredatorBehavior : Animal
         Gizmos.DrawWireSphere(transform.position, sightDistance); 
 
 
-        // Draw a ray toward the prey
-        // if (prey != null)
-        // {
-        //     Gizmos.color = Color.red;
-        //     Gizmos.DrawLine(transform.position, prey.position);
-        // }
+        if (prey != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, prey.position);
+        }
 
 
         

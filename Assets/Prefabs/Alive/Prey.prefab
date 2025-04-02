@@ -11,13 +11,13 @@ GameObject:
   - component: {fileID: 3743147646211466591}
   - component: {fileID: 2884546289056283886}
   - component: {fileID: 11929679480344701}
-  - component: {fileID: 9122612507103716547}
   - component: {fileID: 8863454226891821008}
   - component: {fileID: 7248837056895791892}
   - component: {fileID: -1086165858558151290}
-  m_Layer: 7
+  - component: {fileID: 1396265368503405755}
+  m_Layer: 9
   m_Name: Prey
-  m_TagString: Predator
+  m_TagString: Prey
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 16e6c3c2a16979b4eba8f4bfcc151d00, type: 2}
+  - {fileID: 2100000, guid: 16e3c0a1ffae95d42bf25c161c392be4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -90,46 +90,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &9122612507103716547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7845509590033974961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5c0921e7c6be41409280fc71bf63077, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentState: 0
-  predatorState: 0
-  prey: {fileID: 0}
-  isWandering: 0
-  wanderRadius: 10
-  wanderDistance: 20
-  wanderingMoveSpeed: 4
-  maxSpeed: 4
-  maxForce: 10
-  steeringWeight: 0.5
-  obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
-  obstacleAvoidanceRadius: 5
-  obstacleDetectionRadius: 20
-  fieldofView: 120
-  sightDistance: 25
-  detectionInterval: 0.2
-  hidingSpot: {fileID: 0}
-  isHiding: 0
-  stalkingDistance: 25
-  stalkTime: 0
-  chaseSpeed: 5
-  chaseDistance: 0
-  stamina: 100
-  staminaDrainRate: 10
-  staminaRecoveryRate: 5
-  killDistance: 0
 --- !u!54 &8863454226891821008
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -187,7 +147,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 7845509590033974961}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 5
+  m_Radius: 4
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -200,3 +160,44 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &1396265368503405755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7845509590033974961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 741ba48e7714f054a84a9090234cb130, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentState: 0
+  preyState: 0
+  predator: {fileID: 0}
+  herdLeader: {fileID: 3743147646211466591}
+  preyLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  safeDistance: 25
+  jitterAmount: 0.5
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  isGrazing: 0
+  grazingRadius: 10
+  grazingMoveSpeed: 2
+  grazingTime: 5
+  fieldofView: 90
+  sightDistance: 20
+  detectionInterval: 0.2
+  lastKnownPredatorPosition: {x: 0, y: 0, z: 0}
+  lastKnownPredatorDistance: 0
+  isAlert: 0
+  herdAlertRadius: 15
+  alertDistance: 20
+  alertTime: 0
+  fleeRadius: 15
+  fleeingSpeed: 5
+  avoidanceBlendFactor: 0.5
+  migratingMoveSpeed: 2
